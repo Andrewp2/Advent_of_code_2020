@@ -5,7 +5,89 @@ fn main() {
     //advent_1();
     //advent_2();
     //advent_3();
-    advent_4();
+    //advent_4();
+    advent_5();
+    advent_6();
+}
+
+fn advent_5() {
+    let file = File::open("advent_3").unwrap();
+    let mut vec: Vec<String> = Vec::new();
+    for line in BufReader::new(file).lines() {
+        vec.push(line.unwrap());
+    }
+    let mut x = 0;
+    let mut y = 0;
+    let mut count = 0;
+    while y < vec.len() {
+        if vec[y].chars().nth(x%vec[0].len()).unwrap() == '#' {
+            count += 1;
+        }
+        x += 3;
+        y += 1;
+    }
+    println!("{}", count);
+}
+
+fn advent_6() {
+    let file = File::open("advent_3").unwrap();
+    let mut vec: Vec<String> = Vec::new();
+    for line in BufReader::new(file).lines() {
+        vec.push(line.unwrap());
+    }
+    let mut finalAns = 1;
+    for (xDel,yDel) in [(1,1), (3,1), (5,1), (7,1), (1, 2)].iter() {
+        let mut x: usize = 0;
+        let mut y: usize = 0;
+        let mut count: u128 = 0;
+        while y < vec.len() {
+            if vec[y].chars().nth(x%vec[0].len()).unwrap() == '#' {
+                count += 1;
+            }
+            x += xDel;
+            y += yDel;
+        }
+        finalAns *= count;
+    }
+    println!("{}", finalAns);
+}
+
+fn advent_1() {
+    let file = File::open("advent_1").unwrap();
+    let mut vec: Vec<String> = Vec::new();
+    for line in BufReader::new(file).lines() {
+        vec.push(line.unwrap());
+    }
+    let v: Vec<u32> = vec.iter().map(|x| x.parse::<u32>().unwrap()).collect();
+
+    for i in &v {
+        for j in &v {
+            if i + j == 2020 {
+                println!("{}, {}", i, j);
+                println!("{}", i * j);
+            }
+        }
+    }
+}
+
+fn advent_2() {
+    let file = File::open("advent_1").unwrap();
+    let mut vec: Vec<String> = Vec::new();
+    for line in BufReader::new(file).lines() {
+        vec.push(line.unwrap());
+    }
+    let v: Vec<u32> = vec.iter().map(|x| x.parse::<u32>().unwrap()).collect();
+
+    for i in &v {
+        for j in &v {
+            for k in &v {
+                if i + j + k == 2020 {
+                    println!("{}, {}, {}", i, j, k);
+                    println!("{}", i * j * k);
+                }
+            }
+        }
+    }
 }
 
 fn advent_3() {
@@ -23,6 +105,8 @@ fn advent_3() {
         let v: Vec<&str> = numbers.split('-').collect();
         let first: u32 = v[0].parse::<u32>().unwrap();
         let second: u32 = v[1].parse::<u32>().unwrap();
+
+
         let mut count = 0;
         for c in password.chars() {
             if c == letter {
@@ -76,42 +160,4 @@ fn advent_4() {
         }
     }
     println!("{}", correct_passwords);
-}
-
-fn advent_1() {
-    let file = File::open("advent_1").unwrap();
-    let mut vec: Vec<String> = Vec::new();
-    for line in BufReader::new(file).lines() {
-        vec.push(line.unwrap());
-    }
-    let v: Vec<u32> = vec.iter().map(|x| x.parse::<u32>().unwrap()).collect();
-
-    for i in &v {
-        for j in &v {
-            if i + j == 2020 {
-                println!("{}, {}", i, j);
-                println!("{}", i * j);
-            }
-        }
-    }
-}
-
-fn advent_2() {
-    let file = File::open("advent_1").unwrap();
-    let mut vec: Vec<String> = Vec::new();
-    for line in BufReader::new(file).lines() {
-        vec.push(line.unwrap());
-    }
-    let v: Vec<u32> = vec.iter().map(|x| x.parse::<u32>().unwrap()).collect();
-
-    for i in &v {
-        for j in &v {
-            for k in &v {
-                if i + j + k == 2020 {
-                    println!("{}, {}, {}", i, j, k);
-                    println!("{}", i * j * k);
-                }
-            }
-        }
-    }
 }
