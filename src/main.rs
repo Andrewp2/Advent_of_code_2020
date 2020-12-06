@@ -1,9 +1,8 @@
-
-use std::fs::File;
-use std::fs;
-use std::io::{BufRead, BufReader};
-use std::hash::Hash;
 use std::collections::HashSet;
+use std::fs;
+use std::fs::File;
+use std::hash::Hash;
+use std::io::{BufRead, BufReader};
 
 fn main() {
     //advent_1();
@@ -17,92 +16,7 @@ fn main() {
     //advent_9();
     //advent_10();
     //advent_11();
-    advent_12();
-}
-
-fn advent_11() {
-    let fileString: String = fs::read_to_string("advent_6").unwrap();
-    let lines = fileString.split("\n\r\n");
-    let mut vec: Vec<String> = Vec::new();
-    for line in lines {
-        vec.push(line.to_string());
-    }
-    let mut b = 0;
-
-    for group in vec {
-        println!("{}", group);
-        let mut a: HashSet<char> = HashSet::new();
-        let mut vec2: Vec<String> = Vec::new();
-        let lines2 = group.split("\n");
-        for line in lines2 {
-            println!("Line: {}", line);
-            vec2.push(line.to_string());
-        }
-
-        for line in vec2 {
-            for c in line.chars() {
-                a.insert(c);
-            }
-        }
-        a.remove(&'\n');
-        a.remove(&'\r');
-        
-        println!("{}", a.len());
-        b += a.len();
-    }
-
-    println!("{}", b);
-}
-
-fn intersection<T: Eq + Hash>(a: HashSet<T>, b: &HashSet<T>) -> HashSet<T> {
-    a.into_iter().filter(|e| b.contains(e)).collect()
-}
-
-fn advent_12() {
-    let fileString: String = fs::read_to_string("advent_6").unwrap();
-    let lines = fileString.split("\n\r\n");
-    let mut vec: Vec<String> = Vec::new();
-    for line in lines {
-        vec.push(line.to_string());
-    }
-    let mut b = 0;
-
-    let mut letters : HashSet<char> = HashSet::new();
-    let alphabet = "abcdefghijklmnopqrstuvwxyz";
-    for letter in alphabet.chars() {
-        letters.insert(letter);
-    }
-
-    for group in vec {
-        println!("{}", group);
-        let mut current_letters: HashSet<char> = letters.iter().copied().collect();
-        let mut vec2: Vec<String> = Vec::new();
-        let lines2 = group.split("\n");
-        for line in lines2 {
-            println!("Line: {}", line);
-            vec2.push(line.to_string());
-        }
-
-        for line in vec2 {
-            let mut a: HashSet<char> = HashSet::new();
-            for c in line.chars() {
-                a.insert(c);
-            }
-            current_letters = intersection(a, &current_letters);
-        }
-        println!("{}", current_letters.len());
-        b += current_letters.len();
-    }
-
-    println!("{}", b);
-}
-
-fn advent_9() {
-    println!("Done in java for external reasons");
-}
-
-fn advent_10() {
-    println!("Done in java for external reasons");
+    //advent_12();
 }
 
 fn advent_1() {
@@ -159,7 +73,6 @@ fn advent_3() {
         let first: u32 = v[0].parse::<u32>().unwrap();
         let second: u32 = v[1].parse::<u32>().unwrap();
 
-
         let mut count = 0;
         for c in password.chars() {
             if c == letter {
@@ -191,12 +104,11 @@ fn advent_4() {
         let mut found_once = false;
         let mut found_twice = false;
         for (i, c) in password.chars().enumerate() {
-            if (i+1) == first {
+            if (i + 1) == first {
                 if c == letter {
                     found_once = true;
                 }
-            }
-            else if (i+1) == second {
+            } else if (i + 1) == second {
                 if found_once {
                     if c == letter {
                         found_twice = true;
@@ -225,7 +137,7 @@ fn advent_5() {
     let mut y = 0;
     let mut count = 0;
     while y < vec.len() {
-        if vec[y].chars().nth(x%vec[0].len()).unwrap() == '#' {
+        if vec[y].chars().nth(x % vec[0].len()).unwrap() == '#' {
             count += 1;
         }
         x += 3;
@@ -241,16 +153,16 @@ fn advent_6() {
         vec.push(line.unwrap());
     }
     let mut finalAns = 1;
-    for (xDel,yDel) in [(1,1), (3,1), (5,1), (7,1), (1, 2)].iter() {
+    for (x_del, y_del) in [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)].iter() {
         let mut x: usize = 0;
         let mut y: usize = 0;
         let mut count: u128 = 0;
         while y < vec.len() {
-            if vec[y].chars().nth(x%vec[0].len()).unwrap() == '#' {
+            if vec[y].chars().nth(x % vec[0].len()).unwrap() == '#' {
                 count += 1;
             }
-            x += xDel;
-            y += yDel;
+            x += x_del;
+            y += y_del;
         }
         finalAns *= count;
     }
@@ -258,8 +170,8 @@ fn advent_6() {
 }
 
 fn advent_7() {
-    let fileString: String = fs::read_to_string("advent_4").unwrap();
-    let lines = fileString.split("\n\r\n");
+    let file_string: String = fs::read_to_string("advent_4").unwrap();
+    let lines = file_string.split("\n\r\n");
     let mut vec: Vec<String> = Vec::new();
     for line in lines {
         vec.push(line.to_string());
@@ -279,7 +191,7 @@ fn advent_7() {
             }
         }
 
-        if necessary_terms.len() == 0{
+        if necessary_terms.len() == 0 {
             count += 1;
         }
     }
@@ -288,8 +200,8 @@ fn advent_7() {
 }
 
 fn advent_8() {
-    let fileString: String = fs::read_to_string("advent_4").unwrap();
-    let lines = fileString.split("\n\r\n");
+    let file_string: String = fs::read_to_string("advent_4").unwrap();
+    let lines = file_string.split("\n\r\n");
     let mut vec: Vec<String> = Vec::new();
     for line in lines {
         vec.push(line.to_string());
@@ -314,7 +226,7 @@ fn advent_8() {
                         continue;
                     }
                 }
-            } 
+            }
         }
 
         if necessary_terms.len() == 0 && valid_data {
@@ -329,9 +241,9 @@ fn advent_8() {
 
 fn valid_puzzle_8(field_type: &&str, value: &&str) -> bool {
     match field_type {
-        &"byr" =>  {
+        &"byr" => {
             let year = value.len();
-            if year != 4  {
+            if year != 4 {
                 return false;
             }
             let val = value.parse::<i32>();
@@ -341,10 +253,10 @@ fn valid_puzzle_8(field_type: &&str, value: &&str) -> bool {
             } else {
                 false
             }
-        },
+        }
         &"iyr" => {
             let year = value.len();
-            if year != 4  {
+            if year != 4 {
                 return false;
             }
             let val = value.parse::<i32>();
@@ -354,10 +266,10 @@ fn valid_puzzle_8(field_type: &&str, value: &&str) -> bool {
             } else {
                 false
             }
-        },
+        }
         &"eyr" => {
             let year = value.len();
-            if year != 4  {
+            if year != 4 {
                 return false;
             }
             let val = value.parse::<i32>();
@@ -367,27 +279,29 @@ fn valid_puzzle_8(field_type: &&str, value: &&str) -> bool {
             } else {
                 false
             }
-        },
+        }
         &"hgt" => {
-            let val = value.chars().take(value.chars().count()-2).collect::<String>().parse::<i32>();
-            let unit_type = value.chars().skip(value.chars().count()-2).take(2).collect::<String>();
+            let val = value
+                .chars()
+                .take(value.chars().count() - 2)
+                .collect::<String>()
+                .parse::<i32>();
+            let unit_type = value
+                .chars()
+                .skip(value.chars().count() - 2)
+                .take(2)
+                .collect::<String>();
             if val.is_ok() {
                 let num = val.unwrap();
                 match &unit_type[..] {
-                    "cm" => {
-                        num >= 150 && num <= 193
-                    },
-                    "in" => {
-                        num >= 59 && num <= 76
-                    },
-                    _ => {
-                        false
-                    }
+                    "cm" => num >= 150 && num <= 193,
+                    "in" => num >= 59 && num <= 76,
+                    _ => false,
                 }
             } else {
                 false
             }
-        },
+        }
         &"hcl" => {
             if value.len() != 7 {
                 return false;
@@ -404,20 +318,101 @@ fn valid_puzzle_8(field_type: &&str, value: &&str) -> bool {
                 }
             }
             return true;
-        },
-        &"ecl" => {
-            ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(value)
-        },
+        }
+        &"ecl" => ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(value),
         &"pid" => {
             if value.len() != 9 {
                 return false;
             }
             let val = value.parse::<i32>();
             return val.is_ok();
-        },
-        &"cid" => {
-            true
         }
-        _ => false
+        &"cid" => true,
+        _ => false,
     }
+}
+
+fn advent_9() {
+    println!("Done in java for external reasons");
+}
+
+fn advent_10() {
+    println!("Done in java for external reasons");
+}
+
+fn advent_11() {
+    let file_string: String = fs::read_to_string("advent_6").unwrap();
+    let lines = file_string.split("\n\r\n");
+    let mut vec: Vec<String> = Vec::new();
+    for line in lines {
+        vec.push(line.to_string());
+    }
+    let mut b = 0;
+
+    for group in vec {
+        println!("{}", group);
+        let mut a: HashSet<char> = HashSet::new();
+        let mut vec2: Vec<String> = Vec::new();
+        let lines2 = group.split("\n");
+        for line in lines2 {
+            println!("Line: {}", line);
+            vec2.push(line.to_string());
+        }
+
+        for line in vec2 {
+            for c in line.chars() {
+                a.insert(c);
+            }
+        }
+        a.remove(&'\n');
+        a.remove(&'\r');
+
+        println!("{}", a.len());
+        b += a.len();
+    }
+
+    println!("{}", b);
+}
+
+fn intersection<T: Eq + Hash>(a: HashSet<T>, b: &HashSet<T>) -> HashSet<T> {
+    a.into_iter().filter(|e| b.contains(e)).collect()
+}
+
+fn advent_12() {
+    let file_string: String = fs::read_to_string("advent_6").unwrap();
+    let lines = file_string.split("\n\r\n");
+    let mut vec: Vec<String> = Vec::new();
+    for line in lines {
+        vec.push(line.to_string());
+    }
+    let mut b = 0;
+
+    let mut letters: HashSet<char> = HashSet::new();
+    let alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for letter in alphabet.chars() {
+        letters.insert(letter);
+    }
+
+    for group in vec {
+        println!("{}", group);
+        let mut current_letters: HashSet<char> = letters.iter().copied().collect();
+        let mut vec2: Vec<String> = Vec::new();
+        let lines2 = group.split("\n");
+        for line in lines2 {
+            println!("Line: {}", line);
+            vec2.push(line.to_string());
+        }
+
+        for line in vec2 {
+            let mut a: HashSet<char> = HashSet::new();
+            for c in line.chars() {
+                a.insert(c);
+            }
+            current_letters = intersection(a, &current_letters);
+        }
+        println!("{}", current_letters.len());
+        b += current_letters.len();
+    }
+
+    println!("{}", b);
 }
