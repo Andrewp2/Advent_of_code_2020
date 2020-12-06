@@ -1,6 +1,9 @@
+
 use std::fs::File;
 use std::fs;
 use std::io::{BufRead, BufReader};
+use std::hash::Hash;
+use std::collections::HashSet;
 
 fn main() {
     //advent_1();
@@ -11,6 +14,95 @@ fn main() {
     //advent_6();
     //advent_7();
     //advent_8();
+    //advent_9();
+    //advent_10();
+    //advent_11();
+    advent_12();
+}
+
+fn advent_11() {
+    let fileString: String = fs::read_to_string("advent_6").unwrap();
+    let lines = fileString.split("\n\r\n");
+    let mut vec: Vec<String> = Vec::new();
+    for line in lines {
+        vec.push(line.to_string());
+    }
+    let mut b = 0;
+
+    for group in vec {
+        println!("{}", group);
+        let mut a: HashSet<char> = HashSet::new();
+        let mut vec2: Vec<String> = Vec::new();
+        let lines2 = group.split("\n");
+        for line in lines2 {
+            println!("Line: {}", line);
+            vec2.push(line.to_string());
+        }
+
+        for line in vec2 {
+            for c in line.chars() {
+                a.insert(c);
+            }
+        }
+        a.remove(&'\n');
+        a.remove(&'\r');
+        
+        println!("{}", a.len());
+        b += a.len();
+    }
+
+    println!("{}", b);
+}
+
+fn intersection<T: Eq + Hash>(a: HashSet<T>, b: &HashSet<T>) -> HashSet<T> {
+    a.into_iter().filter(|e| b.contains(e)).collect()
+}
+
+fn advent_12() {
+    let fileString: String = fs::read_to_string("advent_6").unwrap();
+    let lines = fileString.split("\n\r\n");
+    let mut vec: Vec<String> = Vec::new();
+    for line in lines {
+        vec.push(line.to_string());
+    }
+    let mut b = 0;
+
+    let mut letters : HashSet<char> = HashSet::new();
+    let alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for letter in alphabet.chars() {
+        letters.insert(letter);
+    }
+
+    for group in vec {
+        println!("{}", group);
+        let mut current_letters: HashSet<char> = letters.iter().copied().collect();
+        let mut vec2: Vec<String> = Vec::new();
+        let lines2 = group.split("\n");
+        for line in lines2 {
+            println!("Line: {}", line);
+            vec2.push(line.to_string());
+        }
+
+        for line in vec2 {
+            let mut a: HashSet<char> = HashSet::new();
+            for c in line.chars() {
+                a.insert(c);
+            }
+            current_letters = intersection(a, &current_letters);
+        }
+        println!("{}", current_letters.len());
+        b += current_letters.len();
+    }
+
+    println!("{}", b);
+}
+
+fn advent_9() {
+    println!("Done in java for external reasons");
+}
+
+fn advent_10() {
+    println!("Done in java for external reasons");
 }
 
 fn advent_1() {
