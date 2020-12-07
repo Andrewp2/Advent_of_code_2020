@@ -1,8 +1,14 @@
 use std::collections::HashSet;
+use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufRead, BufReader};
+
+use petgraph::*;
+use petgraph::visit::Dfs;
+use petgraph::graph::NodeIndex;
+use petgraph::visit::EdgeRef;
 
 fn main() {
     //advent_1();
@@ -17,6 +23,8 @@ fn main() {
     //advent_10();
     //advent_11();
     //advent_12();
+    //advent_13();
+    //advent_14();
 }
 
 fn advent_1() {
@@ -415,4 +423,152 @@ fn advent_12() {
     }
 
     println!("{}", b);
+}
+
+fn advent_13() {
+    let file_string: String = fs::read_to_string("advent_7").unwrap();
+    let lines = file_string.split("\n").collect::<Vec<&str>>();
+    let mut g = Graph::<String, u32>::new();
+    let mut bags: HashSet<String> = HashSet::<>::new();
+    for line in &lines {
+        let line_str = line.to_string();
+        let words: Vec<&str> = line_str.split("contain").collect::<Vec<&str>>();
+        let bigger: String = words[0].to_string();
+        let smaller: String = words[1].to_string();
+        let first_split = bigger.split(" ").collect::<Vec<&str>>();
+        let bigger_keyword_1 = first_split[0].to_string();
+        let bigger_keyword_2 = first_split[1].to_string();
+        let bigger_together = format!("{} {}", bigger_keyword_1, bigger_keyword_2);
+        bags.insert(bigger_together);
+        let each_smaller = smaller.split(",").collect::<Vec<&str>>();
+        for contain in each_smaller {
+            let destination = contain.split(" ").collect::<Vec<&str>>();
+            if destination[0] != "no" {
+                let keyword_1 = destination[1];
+                let keyword_2 = destination[2];
+                let together = format!("{} {}", keyword_1, keyword_2);
+                bags.insert(together);
+            }
+        }
+    }
+    let mut map = HashMap::new();
+    for bag in bags {
+        let index = g.add_node(bag.clone());
+        map.insert(bag, index);
+    }
+    for line in &lines {
+        let line_str = line.to_string();
+        let words: Vec<&str> = line_str.split("contain").collect::<Vec<&str>>();
+        let bigger: String = words[0].to_string();
+        let smaller: String = words[1].to_string();
+        let first_split = bigger.split(" ").collect::<Vec<&str>>();
+        let bigger_keyword_1 = first_split[0].to_string();
+        let bigger_keyword_2 = first_split[1].to_string();
+        let bigger_together = format!("{} {}", bigger_keyword_1, bigger_keyword_2);
+        let each_smaller: Vec<String> = smaller.trim().split(",").collect::<Vec<&str>>()
+            .iter().map(|x| x.to_string().trim().to_string()).collect::<Vec<String>>();
+        for contain in each_smaller {
+            let destination = contain.split(" ").collect::<Vec<&str>>();
+            if destination[0] != "no" {
+                let number: u32 = destination[0].parse::<u32>().unwrap();
+                let keyword_1 = destination[1];
+                let keyword_2 = destination[2];
+                let together = format!("{} {}", keyword_1, keyword_2);
+                g.update_edge(*map.get(&bigger_together).unwrap(), *map.get(&together).unwrap(), number);
+            }
+        }
+    }
+    let shiny_gold = map.get("shiny gold").unwrap();
+    let mut final_ans = 0;
+    for start in g.node_indices() {
+        let mut dfs = Dfs::new(&g, start);
+        let mut can_contain: HashSet<usize> = HashSet::new();
+        while let Some(visited) = dfs.next(&g) {
+            can_contain.insert(visited.index());
+        }
+        if can_contain.contains(&shiny_gold.index()) && start.index() != shiny_gold.index() {
+            final_ans += 1;
+        }
+    }
+    println!("{}", final_ans);
+}
+
+fn advent_14() {
+    let file_string: String = fs::read_to_string("advent_7").unwrap();
+    let lines = file_string.split("\n").collect::<Vec<&str>>();
+    let mut g = Graph::<String, u32>::new();
+    let mut bags: HashSet<String> = HashSet::<>::new();
+    for line in &lines {
+        let line_str = line.to_string();
+        let words: Vec<&str> = line_str.split("contain").collect::<Vec<&str>>();
+        let bigger: String = words[0].to_string();
+        let smaller: String = words[1].to_string();
+        let first_split = bigger.split(" ").collect::<Vec<&str>>();
+        let bigger_keyword_1 = first_split[0].to_string();
+        let bigger_keyword_2 = first_split[1].to_string();
+        let bigger_together = format!("{} {}", bigger_keyword_1, bigger_keyword_2);
+        bags.insert(bigger_together);
+        let each_smaller = smaller.split(",").collect::<Vec<&str>>();
+        for contain in each_smaller {
+            let destination = contain.split(" ").collect::<Vec<&str>>();
+            if destination[0] != "no" {
+                let keyword_1 = destination[1];
+                let keyword_2 = destination[2];
+                let together = format!("{} {}", keyword_1, keyword_2);
+                bags.insert(together);
+            }
+        }
+    }
+    let mut map = HashMap::new();
+    for bag in bags {
+        let index = g.add_node(bag.clone());
+        map.insert(bag, index);
+    }
+    for line in &lines {
+        let line_str = line.to_string();
+        let words: Vec<&str> = line_str.split("contain").collect::<Vec<&str>>();
+        let bigger: String = words[0].to_string();
+        let smaller: String = words[1].to_string();
+        let first_split = bigger.split(" ").collect::<Vec<&str>>();
+        let bigger_keyword_1 = first_split[0].to_string();
+        let bigger_keyword_2 = first_split[1].to_string();
+        let bigger_together = format!("{} {}", bigger_keyword_1, bigger_keyword_2);
+        let each_smaller: Vec<String> = smaller.trim().split(",").collect::<Vec<&str>>()
+            .iter().map(|x| x.to_string().trim().to_string()).collect::<Vec<String>>();
+        for contain in each_smaller {
+            let destination = contain.split(" ").collect::<Vec<&str>>();
+            if destination[0] != "no" {
+                let number: u32 = destination[0].parse::<u32>().unwrap();
+                let keyword_1 = destination[1];
+                let keyword_2 = destination[2];
+                let together = format!("{} {}", keyword_1, keyword_2);
+                g.update_edge(*map.get(&bigger_together).unwrap(), *map.get(&together).unwrap(), number);
+            }
+        }
+    }
+    let shiny_gold = map.get("shiny gold").unwrap();
+    let mut total_num_bags = -1;
+    let mut bags_to_unpack: Vec<NodeIndex> = Vec::new();
+    bags_to_unpack.push(*shiny_gold);
+    while !bags_to_unpack.is_empty() {
+        total_num_bags += 1;
+        for unpacked_bag in bags_to_unpack.clone() {
+            print!("{} ", unpacked_bag.index());
+        }
+        println!("");
+        let current = bags_to_unpack.pop().unwrap();
+        let edges = g.edges(current);
+        for edge in edges {
+            println!("A {} contains {} {}", edge.source().index(), edge.weight(), edge.target().index());
+            for num in 0..*edge.weight() {
+                bags_to_unpack.push(edge.target());
+            }
+        }
+    }
+    let mut dfs = Dfs::new(&g, *shiny_gold);
+    let mut can_contain: HashSet<usize> = HashSet::new();
+    while let Some(visited) = dfs.next(&g) {
+        can_contain.insert(visited.index());
+    }
+    println!("{}", total_num_bags);
 }
