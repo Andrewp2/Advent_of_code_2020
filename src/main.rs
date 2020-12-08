@@ -25,6 +25,8 @@ fn main() {
     //advent_12();
     //advent_13();
     //advent_14();
+    //advent_15();
+    advent_16();
 }
 
 fn advent_1() {
@@ -571,4 +573,121 @@ fn advent_14() {
         can_contain.insert(visited.index());
     }
     println!("{}", total_num_bags);
+}
+
+fn advent_15() {
+    let file_string: String = fs::read_to_string("advent_8").unwrap();
+    let lines = file_string.split("\n").collect::<Vec<&str>>();
+    let mut current_index: i32 = 0;
+    let mut acc = 0;
+    let mut map: HashSet<i32> = HashSet::new();
+    loop {
+        println!("Executing instruction: {}", current_index);
+        if map.contains(&current_index.clone()) {
+            break;
+        }
+        map.insert(current_index);
+        let instruction = lines[current_index as usize].split(" ").collect::<Vec<&str>>();
+        match instruction[0] {
+            "acc" => {
+                let string: String = instruction[1].to_string();
+                acc += match string.chars().next().unwrap() {
+                    '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                    '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
+                    _ => 0
+                };
+                current_index += 1;
+            },
+            "nop" => {
+                current_index += 1;
+            },
+            "jmp" => {
+                let string: String = instruction[1].to_string();
+                current_index += match string.chars().next().unwrap() {
+                    '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                    '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
+                    _ => 0
+                };
+            },
+            _ => {
+                println!("What the fuck");
+            }
+        };
+    }
+    println!("Final Ans: {}", acc);
+}
+
+fn advent_16() {
+    let file_string: String = fs::read_to_string("advent_8").unwrap();
+    let lines = file_string.split("\n").collect::<Vec<&str>>();
+    for i in 0..lines.len() {
+        let mut current_index: i32 = 0;
+        let mut acc = 0;
+        let mut map: HashSet<i32> = HashSet::new();
+        println!("{}", i);
+        loop {
+            if map.contains(&current_index.clone()) {
+                acc = -1;
+                break;
+            }
+            map.insert(current_index);
+            if current_index == lines.len() as i32 {
+                println!("Final Answer: {}", acc);
+            }
+            let instruction = lines[current_index as usize].split(" ").collect::<Vec<&str>>();
+            if current_index != i as i32 {
+                match instruction[0] {
+                    "acc" => {
+                        let string: String = instruction[1].to_string();
+                        acc += match string.chars().next().unwrap() {
+                            '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                            '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
+                            _ => 0
+                        };
+                        current_index += 1;
+                    },
+                    "nop" => {
+                        current_index += 1;
+                    },
+                    "jmp" => {
+                        let string: String = instruction[1].to_string();
+                        current_index += match string.chars().next().unwrap() {
+                            '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                            '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
+                            _ => 0
+                        };
+                    },
+                    _ => {
+                        println!("What the fuck");
+                    }
+                };
+            } else {
+                println!("Swap on instruction {}", i);
+                match instruction[0] {
+                    "acc" => {
+                        println!("Acc found on instruction {}", i);
+                        acc = -1;
+                        break;
+                    },
+                    "jmp" => {
+                        current_index += 1;
+                    },
+                    "nop" => {
+                        let string: String = instruction[1].to_string();
+                        current_index += match string.chars().next().unwrap() {
+                            '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                            '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
+                            _ => 0
+                        };
+                    },
+                    _ => {
+                        println!("What the fuck");
+                    }
+                };
+            }
+        }
+        if acc != -1 {
+            println!("Final Ans: {}", acc);
+        }
+    }
 }
