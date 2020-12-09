@@ -26,7 +26,9 @@ fn main() {
     //advent_13();
     //advent_14();
     //advent_15();
-    advent_16();
+    //advent_16();
+    //advent_17();
+    advent_18();
 }
 
 fn advent_1() {
@@ -162,7 +164,7 @@ fn advent_6() {
     for line in BufReader::new(file).lines() {
         vec.push(line.unwrap());
     }
-    let mut finalAns = 1;
+    let mut final_ans = 1;
     for (x_del, y_del) in [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)].iter() {
         let mut x: usize = 0;
         let mut y: usize = 0;
@@ -174,9 +176,9 @@ fn advent_6() {
             x += x_del;
             y += y_del;
         }
-        finalAns *= count;
+        final_ans *= count;
     }
-    println!("{}", finalAns);
+    println!("{}", final_ans);
 }
 
 fn advent_7() {
@@ -688,6 +690,41 @@ fn advent_16() {
         }
         if acc != -1 {
             println!("Final Ans: {}", acc);
+        }
+    }
+}
+
+fn advent_17() {
+    let file_string: String = fs::read_to_string("advent_9").unwrap();
+    let lines: Vec<u64> = file_string.split("\n").collect::<Vec<&str>>().iter().map(|x| x.to_string().trim().parse::<u64>().unwrap()).collect::<Vec<u64>>();
+    for i in 25..lines.len() {
+        let preamble = lines[i-25..i].to_vec();
+        let num = lines[i];
+        let mut can_be_added = false;
+        for j in 0..25 {
+            for k in j+1..25 {
+                if num == (preamble[j] + preamble[k]) {
+                    can_be_added = true;
+                }
+            }
+        };
+        if !can_be_added {
+            println!("{}", i);
+            println!("{}", lines[i]);
+            break;
+        }
+    }
+}
+
+fn advent_18() {
+    let target: u64 = 20874512;
+    let file_string: String = fs::read_to_string("advent_9").unwrap();
+    let lines: Vec<u64> = file_string.split("\n").collect::<Vec<&str>>().iter().map(|x| x.to_string().trim().parse::<u64>().unwrap()).collect::<Vec<u64>>();
+    for i in 0..lines.len() {
+        for j in i+1..lines.len() {
+            if lines[i..j].to_vec().iter().sum::<u64>() == target {
+                println!("{}, {}, {}, {}", i, j-1, lines[i] + lines[j-1], " answer");
+            }
         }
     }
 }
