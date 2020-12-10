@@ -1,14 +1,14 @@
-use std::collections::HashSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs;
 use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufRead, BufReader};
 
-use petgraph::*;
-use petgraph::visit::Dfs;
 use petgraph::graph::NodeIndex;
+use petgraph::visit::Dfs;
 use petgraph::visit::EdgeRef;
+use petgraph::*;
 
 fn main() {
     //advent_1();
@@ -28,7 +28,9 @@ fn main() {
     //advent_15();
     //advent_16();
     //advent_17();
-    advent_18();
+    //advent_18();
+    //advent_19();
+    advent_20();
 }
 
 fn advent_1() {
@@ -433,7 +435,7 @@ fn advent_13() {
     let file_string: String = fs::read_to_string("advent_7").unwrap();
     let lines = file_string.split("\n").collect::<Vec<&str>>();
     let mut g = Graph::<String, u32>::new();
-    let mut bags: HashSet<String> = HashSet::<>::new();
+    let mut bags: HashSet<String> = HashSet::new();
     for line in &lines {
         let line_str = line.to_string();
         let words: Vec<&str> = line_str.split("contain").collect::<Vec<&str>>();
@@ -469,8 +471,13 @@ fn advent_13() {
         let bigger_keyword_1 = first_split[0].to_string();
         let bigger_keyword_2 = first_split[1].to_string();
         let bigger_together = format!("{} {}", bigger_keyword_1, bigger_keyword_2);
-        let each_smaller: Vec<String> = smaller.trim().split(",").collect::<Vec<&str>>()
-            .iter().map(|x| x.to_string().trim().to_string()).collect::<Vec<String>>();
+        let each_smaller: Vec<String> = smaller
+            .trim()
+            .split(",")
+            .collect::<Vec<&str>>()
+            .iter()
+            .map(|x| x.to_string().trim().to_string())
+            .collect::<Vec<String>>();
         for contain in each_smaller {
             let destination = contain.split(" ").collect::<Vec<&str>>();
             if destination[0] != "no" {
@@ -478,7 +485,11 @@ fn advent_13() {
                 let keyword_1 = destination[1];
                 let keyword_2 = destination[2];
                 let together = format!("{} {}", keyword_1, keyword_2);
-                g.update_edge(*map.get(&bigger_together).unwrap(), *map.get(&together).unwrap(), number);
+                g.update_edge(
+                    *map.get(&bigger_together).unwrap(),
+                    *map.get(&together).unwrap(),
+                    number,
+                );
             }
         }
     }
@@ -501,7 +512,7 @@ fn advent_14() {
     let file_string: String = fs::read_to_string("advent_7").unwrap();
     let lines = file_string.split("\n").collect::<Vec<&str>>();
     let mut g = Graph::<String, u32>::new();
-    let mut bags: HashSet<String> = HashSet::<>::new();
+    let mut bags: HashSet<String> = HashSet::new();
     for line in &lines {
         let line_str = line.to_string();
         let words: Vec<&str> = line_str.split("contain").collect::<Vec<&str>>();
@@ -537,8 +548,13 @@ fn advent_14() {
         let bigger_keyword_1 = first_split[0].to_string();
         let bigger_keyword_2 = first_split[1].to_string();
         let bigger_together = format!("{} {}", bigger_keyword_1, bigger_keyword_2);
-        let each_smaller: Vec<String> = smaller.trim().split(",").collect::<Vec<&str>>()
-            .iter().map(|x| x.to_string().trim().to_string()).collect::<Vec<String>>();
+        let each_smaller: Vec<String> = smaller
+            .trim()
+            .split(",")
+            .collect::<Vec<&str>>()
+            .iter()
+            .map(|x| x.to_string().trim().to_string())
+            .collect::<Vec<String>>();
         for contain in each_smaller {
             let destination = contain.split(" ").collect::<Vec<&str>>();
             if destination[0] != "no" {
@@ -546,7 +562,11 @@ fn advent_14() {
                 let keyword_1 = destination[1];
                 let keyword_2 = destination[2];
                 let together = format!("{} {}", keyword_1, keyword_2);
-                g.update_edge(*map.get(&bigger_together).unwrap(), *map.get(&together).unwrap(), number);
+                g.update_edge(
+                    *map.get(&bigger_together).unwrap(),
+                    *map.get(&together).unwrap(),
+                    number,
+                );
             }
         }
     }
@@ -563,7 +583,12 @@ fn advent_14() {
         let current = bags_to_unpack.pop().unwrap();
         let edges = g.edges(current);
         for edge in edges {
-            println!("A {} contains {} {}", edge.source().index(), edge.weight(), edge.target().index());
+            println!(
+                "A {} contains {} {}",
+                edge.source().index(),
+                edge.weight(),
+                edge.target().index()
+            );
             for num in 0..*edge.weight() {
                 bags_to_unpack.push(edge.target());
             }
@@ -589,28 +614,38 @@ fn advent_15() {
             break;
         }
         map.insert(current_index);
-        let instruction = lines[current_index as usize].split(" ").collect::<Vec<&str>>();
+        let instruction = lines[current_index as usize]
+            .split(" ")
+            .collect::<Vec<&str>>();
         match instruction[0] {
             "acc" => {
                 let string: String = instruction[1].to_string();
                 acc += match string.chars().next().unwrap() {
-                    '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                    '+' => instruction[1][1..]
+                        .to_string()
+                        .trim()
+                        .parse::<i32>()
+                        .unwrap(),
                     '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
-                    _ => 0
+                    _ => 0,
                 };
                 current_index += 1;
-            },
+            }
             "nop" => {
                 current_index += 1;
-            },
+            }
             "jmp" => {
                 let string: String = instruction[1].to_string();
                 current_index += match string.chars().next().unwrap() {
-                    '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                    '+' => instruction[1][1..]
+                        .to_string()
+                        .trim()
+                        .parse::<i32>()
+                        .unwrap(),
                     '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
-                    _ => 0
+                    _ => 0,
                 };
-            },
+            }
             _ => {
                 println!("What the fuck");
             }
@@ -636,29 +671,39 @@ fn advent_16() {
             if current_index == lines.len() as i32 {
                 println!("Final Answer: {}", acc);
             }
-            let instruction = lines[current_index as usize].split(" ").collect::<Vec<&str>>();
+            let instruction = lines[current_index as usize]
+                .split(" ")
+                .collect::<Vec<&str>>();
             if current_index != i as i32 {
                 match instruction[0] {
                     "acc" => {
                         let string: String = instruction[1].to_string();
                         acc += match string.chars().next().unwrap() {
-                            '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                            '+' => instruction[1][1..]
+                                .to_string()
+                                .trim()
+                                .parse::<i32>()
+                                .unwrap(),
                             '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
-                            _ => 0
+                            _ => 0,
                         };
                         current_index += 1;
-                    },
+                    }
                     "nop" => {
                         current_index += 1;
-                    },
+                    }
                     "jmp" => {
                         let string: String = instruction[1].to_string();
                         current_index += match string.chars().next().unwrap() {
-                            '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                            '+' => instruction[1][1..]
+                                .to_string()
+                                .trim()
+                                .parse::<i32>()
+                                .unwrap(),
                             '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
-                            _ => 0
+                            _ => 0,
                         };
-                    },
+                    }
                     _ => {
                         println!("What the fuck");
                     }
@@ -670,18 +715,22 @@ fn advent_16() {
                         println!("Acc found on instruction {}", i);
                         acc = -1;
                         break;
-                    },
+                    }
                     "jmp" => {
                         current_index += 1;
-                    },
+                    }
                     "nop" => {
                         let string: String = instruction[1].to_string();
                         current_index += match string.chars().next().unwrap() {
-                            '+' => instruction[1][1..].to_string().trim().parse::<i32>().unwrap(),
+                            '+' => instruction[1][1..]
+                                .to_string()
+                                .trim()
+                                .parse::<i32>()
+                                .unwrap(),
                             '-' => instruction[1].to_string().trim().parse::<i32>().unwrap(),
-                            _ => 0
+                            _ => 0,
                         };
-                    },
+                    }
                     _ => {
                         println!("What the fuck");
                     }
@@ -696,18 +745,23 @@ fn advent_16() {
 
 fn advent_17() {
     let file_string: String = fs::read_to_string("advent_9").unwrap();
-    let lines: Vec<u64> = file_string.split("\n").collect::<Vec<&str>>().iter().map(|x| x.to_string().trim().parse::<u64>().unwrap()).collect::<Vec<u64>>();
+    let lines: Vec<u64> = file_string
+        .split("\n")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|x| x.to_string().trim().parse::<u64>().unwrap())
+        .collect::<Vec<u64>>();
     for i in 25..lines.len() {
-        let preamble = lines[i-25..i].to_vec();
+        let preamble = lines[i - 25..i].to_vec();
         let num = lines[i];
         let mut can_be_added = false;
         for j in 0..25 {
-            for k in j+1..25 {
+            for k in j + 1..25 {
                 if num == (preamble[j] + preamble[k]) {
                     can_be_added = true;
                 }
             }
-        };
+        }
         if !can_be_added {
             println!("{}", i);
             println!("{}", lines[i]);
@@ -719,12 +773,81 @@ fn advent_17() {
 fn advent_18() {
     let target: u64 = 20874512;
     let file_string: String = fs::read_to_string("advent_9").unwrap();
-    let lines: Vec<u64> = file_string.split("\n").collect::<Vec<&str>>().iter().map(|x| x.to_string().trim().parse::<u64>().unwrap()).collect::<Vec<u64>>();
+    let lines: Vec<u64> = file_string
+        .split("\n")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|x| x.to_string().trim().parse::<u64>().unwrap())
+        .collect::<Vec<u64>>();
     for i in 0..lines.len() {
-        for j in i+1..lines.len() {
+        for j in i + 1..lines.len() {
             if lines[i..j].to_vec().iter().sum::<u64>() == target {
-                println!("{}, {}, {}, {}", i, j-1, lines[i] + lines[j-1], " answer");
+                println!(
+                    "{}, {}, {}, {}",
+                    i,
+                    j - 1,
+                    lines[i] + lines[j - 1],
+                    " answer"
+                );
             }
         }
     }
+}
+
+fn advent_19() {
+    let file_string: String = fs::read_to_string("advent_10").unwrap();
+    let mut lines: Vec<u64> = file_string
+        .split("\n")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|x| x.to_string().trim().parse::<u64>().unwrap())
+        .collect::<Vec<u64>>();
+    lines.sort();
+    let mut three_difference = 1;
+    let mut one_difference = 0;
+    let mut current_voltage = 0;
+    for num in lines {
+        let current_difference = num - current_voltage;
+        match current_difference {
+            1 => {
+                one_difference += 1;
+                current_voltage = num;
+            }
+            3 => {
+                three_difference += 1;
+                current_voltage = num;
+            }
+            _ => {
+                current_voltage = num;
+            }
+        }
+    }
+    println!("{}", three_difference * one_difference);
+}
+
+fn advent_20() {
+    let file_string: String = fs::read_to_string("advent_10").unwrap();
+    let mut lines: Vec<u64> = file_string
+        .split("\n")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|x| x.to_string().trim().parse::<u64>().unwrap())
+        .collect::<Vec<u64>>();
+    lines.sort();
+    lines.push(lines[(lines.len() - 1)] + 3);
+    let mut vec: Vec<u64> = vec![0; (lines[(lines.len() - 1)] + 4) as usize];
+    vec[3] = 1;
+    println!("{}", lines[(lines.len() - 1)] + 1);
+    for i in 0..(lines[(lines.len() - 1)] + 1) as usize {
+        println!("i: {}", i);
+        if lines.iter().any(|&j| i == j as usize) {
+            println!("i matches: {}", i);
+            vec[i + 3] = vec[i + 2] + vec[i + 1] + vec[i];
+        }
+    }
+
+    for (i, val) in vec.iter().enumerate() {
+        println!("i: {} {}", (i as i64) - 3, val);
+    }
+    println!("{}", vec[vec.len() - 1]);
 }
